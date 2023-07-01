@@ -3,12 +3,23 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const expect = require('chai');
 const socket = require('socket.io');
+const socketIO = require('socket.io');
+const helmet = require('helmet')
+
 const cors = require('cors');
+
+
+
 
 const fccTestingRoutes = require('./routes/fcctesting.js');
 const runner = require('./test-runner.js');
 
 const app = express();
+app.use(helmet());
+app.use(helmet.noSniff());
+app.use(helmet.noCache());
+app.use(helmet.hidePoweredBy({ setTo: "PHP 7.4.3"  }));
+
 
 app.use('/public', express.static(process.cwd() + '/public'));
 app.use('/assets', express.static(process.cwd() + '/assets'));
@@ -23,7 +34,11 @@ app.use(cors({origin: '*'}));
 app.route('/')
   .get(function (req, res) {
     res.sendFile(process.cwd() + '/views/index.html');
-  }); 
+  });
+app.route('/canvas')
+  .get((req, res) => {
+    res.sendFile(process.cwd() + '/views/canvas.html')
+  })
 
 //For FCC testing purposes
 fccTestingRoutes(app);
@@ -35,9 +50,10 @@ app.use(function(req, res, next) {
     .send('Not Found');
 });
 
-const portNum = process.env.PORT || 3000;
+const portNum = process.env.PORT || 4000;
 
 // Set up server and tests
+
 const server = app.listen(portNum, () => {
   console.log(`Listening on port ${portNum}`);
   if (process.env.NODE_ENV==='test') {
@@ -53,4 +69,4 @@ const server = app.listen(portNum, () => {
   }
 });
 
-module.exports = app; // For testing
+

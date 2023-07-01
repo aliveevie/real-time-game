@@ -4,15 +4,20 @@ body {
 
 code {
   background: #d0d0d5;
+  
 }
 
 canvas {
   margin: auto;
+  border: 1px solid white;
+  background-color: black;
+  
 }
 
 .container {
   display: flex;
   flex-direction: column;
+  
 }
 
 @media (min-width: 800px) {
